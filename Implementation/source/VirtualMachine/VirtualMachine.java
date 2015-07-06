@@ -3,11 +3,14 @@
  * 2015/07/05 
  **/
 
+package VirtualMachine;
+
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
+import GateManager.*;
 
 class VirtualMachine {
     enum State {
@@ -23,8 +26,6 @@ class VirtualMachine {
     static ArrayList<VirtualStation> stations = new ArrayList<VirtualStation>();
     static ArrayList<String>  choices  = new ArrayList<String>();
     static boolean running = true;
-    
-    static GateManager manager = new GateManager();
     
     private static final int TEST_MAX = 256;
     
@@ -63,7 +64,7 @@ class VirtualMachine {
         displayStats();
         displayChoices();
         
-        input = getUserInputNum(0,4);
+        input = getUserInputNum(0,choices.size());
         
         switch ( input ) {
             case 0:
@@ -84,7 +85,15 @@ class VirtualMachine {
                 changeState(State.CREATE_ICCARD);
                 break;
             case 4:
-                changeState(State.THROUGH_GATE);
+                if ( stations.isEmpty() ) {
+                    System.out.println("there is no station.");
+                    System.out.println("please create a station.");
+                } else if ( tickets.isEmpty() && iccards.isEmpty() ) {
+                    System.out.println("there is no tickets or iccards.");
+                    System.out.println("please create a ticket or a iccard.");
+                } else {
+                    changeState(State.THROUGH_GATE);
+                }
                 break;
         }
     }
@@ -103,14 +112,28 @@ class VirtualMachine {
         displayStations();
         inputStation = getUserInputNum(0, stations.size());
         System.out.println("input a cost");
-        inputCost = getUserInputNum(0, Integer.MAX_VALUE);
+        inputCost = getUserInputNum();
         tickets.add(new VirtualTicket(inputCost, stations.get(inputStation)));
         changeState(State.MENU);
     }
     private static void createICCardProcess() {
+        int input;
+        System.out.println("input charge ampunt.");
+        input = getUserInputNum();
+        iccards.add(new VirtualICCard(input));
         changeState(State.MENU);
     }
     private static void throughGateProcess() {
+        GateManager gateManager = new GateManager();
+        System.out.println("choose ticket or ICCard.");
+        System.out.println("0:ticket, 1:iccard");
+        int input = getUserInputNum(0,2);
+        switch( input ) {
+            case 0:
+            break;
+            case 1:
+            break;
+        }
         changeState(State.MENU);
     }
     ////
@@ -139,11 +162,13 @@ class VirtualMachine {
             case THROUGH_GATE:
                 break;
         }
+        System.out.println();
     }
     
     //// input methods ////
     private static int getUserInputNum(int min, int max) {
         int input;
+        max--;
         do {
             System.out.print(">>");
             try {
@@ -164,7 +189,7 @@ class VirtualMachine {
         return input;
     }
     private static int getUserInputNum() {
-        return getUserInputNum(Integer.MAX_VALUE,Integer.MIN_VALUE);
+        return getUserInputNum(0,Integer.MAX_VALUE);
     }
     
     private static String getUserInputStr() {
@@ -237,7 +262,8 @@ class VirtualMachine {
     ////
     
 }
-//// out of ticket machine
+
+//// virtual objects
 class VirtualStation {
     private String name;
     
@@ -281,6 +307,9 @@ class VirtualICCard {
     public int getCharge() {
         return chargeAmount;
     }
+    public void deductCharge(int deductAmount) {
+        chargeAmount -= deductAmount;
+    }
     public void updateCharge(int charge) {
         chargeAmount = charge;
     }
@@ -300,4 +329,3 @@ class VirtualICCard {
     }
     
 }
-////

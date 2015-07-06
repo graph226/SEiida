@@ -3,6 +3,8 @@
  * 2015/07/06
  **/
 
+package GateManager;
+
 class Station {
     private String name;
     
@@ -72,10 +74,13 @@ class ICCard extends Pass {
     
 }
 
-
-///////  sorry! unimplemented from here!!!
-
-class GateManager {
+public class GateManager {
+    
+    Station station;
+    boolean isEntrance; // true:entrance false:exit
+    TicketReceiver ticketReceiver;
+    ICPanel icPanel;
+    Gate gate;
     
     public void deductICCharge(int deductAmount) {
         
@@ -90,7 +95,6 @@ class TicketVent {
     public void putoutTicket() {
     }
 }
-
 
 class PassReceiver {
     public void insert(Pass pass) {
@@ -117,6 +121,7 @@ class Gate {
     }
 }
 
+//// 
 
 class ICCardModifyer {
 }
