@@ -1,12 +1,13 @@
-/*
+/**
  * VirtualMachine.java
  * 2015/07/05 
- */
- 
+ **/
+
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+
 
 class VirtualMachine {
     enum State {
@@ -17,15 +18,17 @@ class VirtualMachine {
         THROUGH_GATE
     }
     static State state;
-    static ArrayList<ICCard>  iccards  = new ArrayList<ICCard>();
-    static ArrayList<Ticket>  tickets  = new ArrayList<Ticket>();
-    static ArrayList<Station> stations = new ArrayList<Station>();
+    static ArrayList<VirtualICCard>  iccards  = new ArrayList<VirtualICCard>();
+    static ArrayList<VirtualTicket>  tickets  = new ArrayList<VirtualTicket>();
+    static ArrayList<VirtualStation> stations = new ArrayList<VirtualStation>();
     static ArrayList<String>  choices  = new ArrayList<String>();
+    static boolean running = true;
+    
+    static GateManager manager = new GateManager();
     
     private static final int TEST_MAX = 256;
     
     public static void main(String[] args) {
-        boolean running = true;
         
         initialize();
         
@@ -33,59 +36,84 @@ class VirtualMachine {
             
             switch ( state ) {
                 case MENU:
-                    {
-                        int input;
-                        
-                        displayStats();
-                        displayChoices();
-                        
-                        input = getUserInputNum(0,4);
-                        
-                        switch ( inputNum ) {
-                            case 0:
-                                running = false;
-                                break;
-                            case 1:
-                                changeState(State.CREATE_STATION);
-                                break;
-                            case 2:
-                                if ( !stations.isEmpty() ) {
-                                    changeState(State.CREATE_TICKET);
-                                } else {
-                                    System.out.println("there is no station.");
-                                    System.out.println("please create a station.");
-                                }
-                                break;
-                            case 3:
-                                changeState(State.CREATE_ICCARD);
-                                break;
-                            case 4:
-                                changeState(State.THROUGH_GATE);
-                                break;
-                        }
-                    }
+                    menuProcess();
                     break;
                 case CREATE_STATION:
-                    System.out.println("input the station name.");
-                    inputStr = getUserInputStr();
-                    stations.add(new Station(inputStr));
-                    System.out.println("create station \""+inputStr+"\"");
-                    changeState(State.MENU);
+                    createStationProcess();
                     break;
                 case CREATE_TICKET:
-                    System.out.println("input an entraining point");
-                    displayStations();
-                    inputNum = getUserInputNum(0, stations.size());
-                    System.out.println("input a cost");
-                    inputNum = getUserInputNum(0, Integer.MAX_VALUE);
-                    tickets.add(new Ticket(inputNum, stations.get(inputNum)));
+                    createTicketProcess();
                     break;
                 case CREATE_ICCARD:
+                    createICCardProcess();
+                    break;
+                case THROUGH_GATE:
+                    throughGateProcess();
                     break;
             }
         }
         System.out.println("exit");
     }
+    
+    
+    //// main process
+    private static void menuProcess() {
+        int input;
+        
+        displayStats();
+        displayChoices();
+        
+        input = getUserInputNum(0,4);
+        
+        switch ( input ) {
+            case 0:
+                running = false;
+                break;
+            case 1:
+                changeState(State.CREATE_STATION);
+                break;
+            case 2:
+                if ( !stations.isEmpty() ) {
+                    changeState(State.CREATE_TICKET);
+                } else {
+                    System.out.println("there is no station.");
+                    System.out.println("please create a station.");
+                }
+                break;
+            case 3:
+                changeState(State.CREATE_ICCARD);
+                break;
+            case 4:
+                changeState(State.THROUGH_GATE);
+                break;
+        }
+    }
+    private static void createStationProcess() {
+        String input;
+        System.out.println("input the station name.");
+        input = getUserInputStr();
+        stations.add(new VirtualStation(input));
+        System.out.println("create station \""+input+"\"");
+        changeState(State.MENU);
+    }
+    private static void createTicketProcess() {
+        int inputStation;
+        int inputCost;
+        System.out.println("input an entraining point");
+        displayStations();
+        inputStation = getUserInputNum(0, stations.size());
+        System.out.println("input a cost");
+        inputCost = getUserInputNum(0, Integer.MAX_VALUE);
+        tickets.add(new VirtualTicket(inputCost, stations.get(inputStation)));
+        changeState(State.MENU);
+    }
+    private static void createICCardProcess() {
+        changeState(State.MENU);
+    }
+    private static void throughGateProcess() {
+        changeState(State.MENU);
+    }
+    ////
     
     private static void initialize() {
         changeState(State.MENU);
@@ -136,7 +164,7 @@ class VirtualMachine {
         return input;
     }
     private static int getUserInputNum() {
-        getUserInputNum(Integer.MAX_VALUE,Integer.MIN_VALUE);
+        return getUserInputNum(Integer.MAX_VALUE,Integer.MIN_VALUE);
     }
     
     private static String getUserInputStr() {
@@ -170,7 +198,7 @@ class VirtualMachine {
     private static void displayStations() {
         System.out.println("stations:");
         int i = 0;
-        for ( Station station : stations ) {
+        for ( VirtualStation station : stations ) {
             System.out.println(" "+i+":");
             System.out.println("  name:"+station);
             i++;
@@ -179,7 +207,7 @@ class VirtualMachine {
     private static void displayICCards() {
         System.out.println("iccards:");
         int i = 0;
-        for ( ICCard iccard : iccards ) {
+        for ( VirtualICCard iccard : iccards ) {
             System.out.println(" "+i+":");
             System.out.println("  charge:"+iccard.getCharge());
             System.out.println("  entrainingPoint:"+iccard.getEntrainingPoint());
@@ -189,7 +217,7 @@ class VirtualMachine {
     private static void displayTickets() {
         System.out.println("tickets:");
         int i = 0;
-        for ( Ticket ticket: tickets) {
+        for ( VirtualTicket ticket: tickets) {
             System.out.println(" "+i+":");
             System.out.println("  cost:"+ticket.getCost());
             System.out.println("  entrainingPoint:"+ticket.getEntrainingPoint());
@@ -209,129 +237,67 @@ class VirtualMachine {
     ////
     
 }
-
-class Station {
+//// out of ticket machine
+class VirtualStation {
     private String name;
     
-    public Station(String n) {
+    public VirtualStation(String n) {
         name = n;
     }
-    
-    // to debug
     public String toString() {
         return name;
     }
 }
-
-abstract class Pass{
-}
-
-class Ticket extends Pass {
+class VirtualTicket {
     private int cost;
-    private Station entrainingPoint;
-    // private boolean isInStation;
+    private VirtualStation entrainingPoint;
+    private boolean isInStationStat;
     
-    public Station getEntrainingPoint() {
+    public VirtualStation getEntrainingPoint() {
         return entrainingPoint;
     }
     public int getCost() {
         return cost;
     }
-    
-    public Ticket(int c, Station ep ) {
-        cost = c;
-        entrainingPoint = ep;
-        // isInStation = false;
+    public boolean isInStation() {
+        return isInStationStat;
     }
     
+    public VirtualTicket(int c, VirtualStation ep) {
+        cost = c;
+        entrainingPoint = ep;
+        isInStationStat = false;
+    }
+    public VirtualTicket(int c, VirtualStation ep ,boolean stat) {
+        cost = c;
+        entrainingPoint = ep;
+        isInStationStat = stat;
+    }
 }
-
-class ICCard extends Pass {
+class VirtualICCard {
     private int chargeAmount;
-    private Station entrainingPoint;
-    
-    // unused
-    private Station commuterPassStart;
-    private Station commuterPassEnd;
-    // private boolean isInStation;
+    private VirtualStation entrainingPoint;
     
     public int getCharge() {
         return chargeAmount;
     }
-    public void deductCharge(int deductAmount) {
-        chargeAmount -= deductAmount;
-    }
     public void updateCharge(int charge) {
         chargeAmount = charge;
     }
-    public void updateEntrainingPoint(Station station) {
+    public void updateEntrainingPoint(VirtualStation station) {
         entrainingPoint = station;
     }
-    public Station getEntrainingPoint() {
+    public VirtualStation getEntrainingPoint() {
         return entrainingPoint;
     }
+    public boolean isInStation() {
+        return entrainingPoint != null;
+    }
     
-    public ICCard(int charge) {
+    public VirtualICCard(int charge) {
         chargeAmount = charge;
-        // isInStation = false;
+        entrainingPoint = null;
     }
     
 }
-
-
-///////  sorry! unimplemented from here!!!
-
-class GateManager {
-    
-    public void deductICCharge(int deductAmount) {
-        
-    }
-    
-    static public void openGateCheck(Pass pass) {
-        
-    }
-}
-
-class TicketVent {
-    public void putoutTicket() {
-    }
-}
-
-
-class PassReceiver {
-    public void insert(Pass pass) {
-        GateManager.openGateCheck(pass);
-    }
-}
-
-class TicketReceiver extends PassReceiver {
-    // insert ticket
-    public void insert(Pass pass) {
-        super.insert(pass);
-    }
-}
-
-class ICPanel extends PassReceiver {
-    // touch ICCard
-    public void insert(Pass pass) {
-        super.insert(pass);
-    }
-}
-
-class Gate {
-    public void closeGate() {
-    }
-}
-
-
-class ICCardModifyer {
-}
-
-class ConsoleScreen {
-}
-
-class CashVent {
-}
-
-class CashReceiver {
-}
+////

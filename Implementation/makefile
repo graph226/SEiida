@@ -1,2 +1,2 @@
-default:VirtualMachine.java
+default:VirtualMachine.java GateManager.java 
 	javac -d ./classes/ -J-Dfile.encoding=UTF8 VirtualMachine.java
