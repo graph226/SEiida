@@ -21,13 +21,14 @@ class GateInputBoundary {
 }
 
 class GateManager {
-    public void check(ICCard iccard) {
+    static public void check(ICCard iccard) {
         // calc
         // then
         Gate.open();
+        ICPanel.deduct();
         else
         Gate.close();
-        ICPanel.warn();
+        Display.warn();
     }
     
     public void check(Ticket ticket) {
@@ -35,6 +36,11 @@ class GateManager {
     }
 }
 
+through_gateで要る入力
+・ICカードなのか切符なのか
+・使う切符orICカード
+・入場か出場か
+・何駅か
 
 
 

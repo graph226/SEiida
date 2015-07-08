@@ -1,9 +1,9 @@
 /**
- * VirtualMachine.java
+ * VirtualEnvironment.java
  * 2015/07/05 
  **/
 
-package VirtualMachine;
+package VirtualEnvironment;
 
 import java.util.ArrayList;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.io.BufferedReader;
 
 import GateManager.*;
 
-class VirtualMachine {
+class VirtualEnvironment {
     enum State {
         MENU,
         CREATE_STATION,
@@ -107,13 +107,13 @@ class VirtualMachine {
     }
     private static void createTicketProcess() {
         int inputStation;
-        int inputCost;
+        int inputCharge;
         System.out.println("input an entraining point");
         displayStations();
         inputStation = getUserInputNum(0, stations.size());
-        System.out.println("input a cost");
-        inputCost = getUserInputNum();
-        tickets.add(new VirtualTicket(inputCost, stations.get(inputStation)));
+        System.out.println("input a charge");
+        inputCharge = getUserInputNum();
+        tickets.add(new VirtualTicket(inputCharge, stations.get(inputStation)));
         changeState(State.MENU);
     }
     private static void createICCardProcess() {
@@ -124,17 +124,58 @@ class VirtualMachine {
         changeState(State.MENU);
     }
     private static void throughGateProcess() {
-        GateManager gateManager = new GateManager();
+        int input;
+        int index;
+        Pass pass = null;
+        VirtualStation station;
+        boolean isEntrance;
+        
+        // choose entrance or exit
+        System.out.println("choose entrance gate or exit gate ");
+        System.out.println("0:entrance , 1:exit ");
+        input = getUserInputNum(0,2);
+        if ( input == 0 ) {
+            isEntrance = true;
+        } else {
+            isEntrance = false;
+        }
+        
+        // choose ticket or ICCard
         System.out.println("choose ticket or ICCard.");
         System.out.println("0:ticket, 1:iccard");
-        int input = getUserInputNum(0,2);
+        input = getUserInputNum(0,2);
         switch( input ) {
             case 0:
-            break;
+                System.out.println("choose ticket");
+                displayTickets();
+                index = getUserInputNum(0,tickets.size());
+                pass = (Pass)tickets.get(index);
+                break;
             case 1:
-            break;
+                System.out.println("choose ICCard");
+                displayICCards();
+                index = getUserInputNum(0,iccards.size());
+                pass = (Pass)iccards.get(index);
+                break;
+            default:
+                System.err.println("mysterious error caused");
         }
+        
+        // choose station
+        System.out.println("choose station");
+        displayStations();
+        index = getUserInputNum(0,stations.size());
+        station = stations.get(index);
+        
+        throughGate(isEntrance, pass, station);
+        
         changeState(State.MENU);
+    }
+    ////
+    
+    //// the most important thing that i should implement.
+    private static void throughGate(boolean isEntrance, Pass pass, Station station) {
+        
     }
     ////
     
@@ -244,7 +285,7 @@ class VirtualMachine {
         int i = 0;
         for ( VirtualTicket ticket: tickets) {
             System.out.println(" "+i+":");
-            System.out.println("  cost:"+ticket.getCost());
+            System.out.println("  charge:"+ticket.getCharge());
             System.out.println("  entrainingPoint:"+ticket.getEntrainingPoint());
             i++;
         }
@@ -264,9 +305,8 @@ class VirtualMachine {
 }
 
 //// virtual objects
-class VirtualStation {
+class VirtualStation extends Station{
     private String name;
-    
     public VirtualStation(String n) {
         name = n;
     }
@@ -274,33 +314,33 @@ class VirtualStation {
         return name;
     }
 }
-class VirtualTicket {
-    private int cost;
+class VirtualTicket extends Ticket{
+    private int charge;
     private VirtualStation entrainingPoint;
     private boolean isInStationStat;
     
     public VirtualStation getEntrainingPoint() {
         return entrainingPoint;
     }
-    public int getCost() {
-        return cost;
+    public int getCharge() {
+        return charge;
     }
     public boolean isInStation() {
         return isInStationStat;
     }
     
     public VirtualTicket(int c, VirtualStation ep) {
-        cost = c;
+        charge = c;
         entrainingPoint = ep;
         isInStationStat = false;
     }
     public VirtualTicket(int c, VirtualStation ep ,boolean stat) {
-        cost = c;
+        charge = c;
         entrainingPoint = ep;
         isInStationStat = stat;
     }
 }
-class VirtualICCard {
+class VirtualICCard extends ICCard{
     private int chargeAmount;
     private VirtualStation entrainingPoint;
     
@@ -329,3 +369,4 @@ class VirtualICCard {
     }
     
 }
+
