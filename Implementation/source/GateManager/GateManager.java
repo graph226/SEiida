@@ -9,15 +9,10 @@ public class GateManager {
     
     Station station;
     boolean isEntrance; // true:entrance false:exit
-    TicketReceiver ticketReceiver;
-    ICPanel icPanel;
     Gate gate;
     
-    public void deductICCharge(int deductAmount) {
-        
-    }
-    
     static public void openGateCheck(Pass pass) {
+        
     }
     
     public GateManager(Station station, boolean isEntrance) {
@@ -29,24 +24,26 @@ public class GateManager {
 
 class TicketVent {
     public void putoutTicket() {
+        System.out.println("putout ticket");
     }
 }
 
-/*
-class PassReceiver {
-    public void insert(Pass pass) {
+
+interface PassReceiver {
+    static public void insert(Pass pass) {
         GateManager.openGateCheck(pass);
     }
-}*/
-
-class TicketReceiver {
 }
 
-class ICPanel {
+class TicketReceiver implements PassReceiver {
+}
+
+class ICPanel implements PassReceiver {
 }
 
 class Gate {
-    public void closeGate() {
+    static public void closeGate() {
+        System.out.println("close gate");
     }
 }
 

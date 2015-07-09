@@ -11,6 +11,10 @@ public class Station {
     public Station(String n) {
         name = n;
     }
+    public String toString() {
+        return name;
+    }
+    
     public Station() {
     }
 }

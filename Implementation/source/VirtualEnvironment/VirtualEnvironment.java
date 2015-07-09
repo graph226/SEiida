@@ -322,12 +322,6 @@ class VirtualTicket extends Ticket{
     public VirtualStation getEntrainingPoint() {
         return entrainingPoint;
     }
-    public int getCharge() {
-        return charge;
-    }
-    public boolean isInStation() {
-        return isInStationStat;
-    }
     
     public VirtualTicket(int c, VirtualStation ep) {
         charge = c;
@@ -344,23 +338,8 @@ class VirtualICCard extends ICCard{
     private int chargeAmount;
     private VirtualStation entrainingPoint;
     
-    public int getCharge() {
-        return chargeAmount;
-    }
-    public void deductCharge(int deductAmount) {
-        chargeAmount -= deductAmount;
-    }
-    public void updateCharge(int charge) {
-        chargeAmount = charge;
-    }
-    public void updateEntrainingPoint(VirtualStation station) {
-        entrainingPoint = station;
-    }
     public VirtualStation getEntrainingPoint() {
         return entrainingPoint;
-    }
-    public boolean isInStation() {
-        return entrainingPoint != null;
     }
     
     public VirtualICCard(int charge) {

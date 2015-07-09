@@ -19,8 +19,6 @@ public class Ticket extends Pass{
     public boolean isInStation() {
         return isInStationStat;
     }
-    public void passThrough() {
-    }
     
     public Ticket(int c, Station ep ,boolean stat) {
         charge = c;

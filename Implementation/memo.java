@@ -1,12 +1,6 @@
 class VirtualUI {
     public static void main(String[] args) {
-        ICCard[] iccard = new ICCard[10];
-        switch( input ) {
-            case 1:
-                break;
-            case 2:
-                break;
-        }
+        icCardTouched(iccard);
     }
 }
 
@@ -23,7 +17,7 @@ class GateInputBoundary {
 class GateManager {
     static public void check(ICCard iccard) {
         // calc
-        // then
+        if then
         Gate.open();
         ICPanel.deduct();
         else

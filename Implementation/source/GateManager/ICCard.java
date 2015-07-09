@@ -16,22 +16,20 @@ public class ICCard extends Pass{
     public int getCharge() {
         return chargeAmount;
     }
-    public void deductCharge(int deductAmount) {
-        chargeAmount -= deductAmount;
+    static public void deductCharge(int deductAmount) {
+        System.out.println("");
     }
     public void updateCharge(int charge) {
         chargeAmount = charge;
     }
     public void updateEntrainingPoint(Station station) {
+        entrainingPoint = station;
     }
     public Station getEntrainingPoint() {
         return entrainingPoint;
     }
     public boolean isInStation() {
         return entrainingPoint != null;
-    }
-    
-    public void passThrough() {
     }
     
     public ICCard(int charge) {
