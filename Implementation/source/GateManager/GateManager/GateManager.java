@@ -30,9 +30,9 @@ class TicketVent {
 
 
 interface PassReceiver {
-    static public void insert(Pass pass) {
-        GateManager.openGateCheck(pass);
-    }
+ /*   abstract static public void insert(Pass pass) {
+    //    GateManager.openGateCheck(pass);
+    }*/
 }
 
 class TicketReceiver implements PassReceiver {

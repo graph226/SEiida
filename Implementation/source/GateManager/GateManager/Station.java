@@ -6,16 +6,16 @@
 package GateManager;
 
 public class Station {
-    private String name;
-    
-    public Station(String n) {
-        name = n;
-    }
-    public String toString() {
-        return name;
-    }
-    
-    public Station() {
-    }
-}
+	private String name;
 
+	public Station(String n) {
+		name = n;
+	}
+
+	public String toString() {
+		return name;
+	}
+
+	public Station() {
+	}
+}

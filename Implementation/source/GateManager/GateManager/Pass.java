@@ -5,10 +5,11 @@
 
 package GateManager;
 
-public abstract class Pass{
-    abstract public Station getEntrainingPoint();
-    abstract public boolean isInStation();
-    abstract public int getCharge();
-    //abstract public void passThrough();
-}
+public abstract class Pass {
+	abstract public Station getEntrainingPoint();
 
+	abstract public boolean isInStation();
+
+	abstract public int getCharge();
+	// abstract public void passThrough();
+}
