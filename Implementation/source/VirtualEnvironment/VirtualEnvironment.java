@@ -118,7 +118,7 @@ class VirtualEnvironment {
     }
     private static void createICCardProcess() {
         int input;
-        System.out.println("input charge ampunt.");
+        System.out.println("input charge amount.");
         input = getUserInputNum();
         iccards.add(new VirtualICCard(input));
         changeState(State.MENU);
@@ -126,6 +126,7 @@ class VirtualEnvironment {
     private static void throughGateProcess() {
         int input;
         int index;
+        int passType;
         Pass pass = null;
         VirtualStation station;
         boolean isEntrance;
@@ -143,15 +144,27 @@ class VirtualEnvironment {
         // choose ticket or ICCard
         System.out.println("choose ticket or ICCard.");
         System.out.println("0:ticket, 1:iccard");
-        input = getUserInputNum(0,2);
-        switch( input ) {
+        passType = getUserInputNum(0,2);
+        switch( passType ) {
             case 0:
+                if ( tickets.isEmpty() ) {
+                    System.out.println("there is no ticket.");
+                    System.out.println("back to menu.");
+                    changeState(State.MENU);
+                    return;
+                }
                 System.out.println("choose ticket");
                 displayTickets();
                 index = getUserInputNum(0,tickets.size());
                 pass = (Pass)tickets.get(index);
                 break;
             case 1:
+                if ( iccards.isEmpty() ) {
+                    System.out.println("there is no ICCard.");
+                    System.out.println("back to menu.");
+                    changeState(State.MENU);
+                    return;
+                }
                 System.out.println("choose ICCard");
                 displayICCards();
                 index = getUserInputNum(0,iccards.size());
@@ -167,15 +180,23 @@ class VirtualEnvironment {
         index = getUserInputNum(0,stations.size());
         station = stations.get(index);
         
-        throughGate(isEntrance, pass, station);
+        throughGate( isEntrance, pass, station);
         
         changeState(State.MENU);
     }
     ////
     
     //// the most important thing that i should implement.
-    private static void throughGate(boolean isEntrance, Pass pass, Station station) {
-        
+    private static void throughGate( boolean isEntrance, Pass pass, Station station) {
+        GateManager.setEnvironment( station, isEntrance );
+        switch( pass.getPassType() ) {
+            case 0:
+                TicketReceiver.insert(pass);
+                break;
+            case 1:
+                ICPanel.insert(pass);
+                break;
+        }
     }
     ////
     
@@ -322,6 +343,9 @@ class VirtualTicket extends Ticket{
     public VirtualStation getEntrainingPoint() {
         return entrainingPoint;
     }
+    public int getCharge() {
+        return charge;
+    }
     
     public VirtualTicket(int c, VirtualStation ep) {
         charge = c;
@@ -340,6 +364,9 @@ class VirtualICCard extends ICCard{
     
     public VirtualStation getEntrainingPoint() {
         return entrainingPoint;
+    }
+    public int getCharge() {
+        return chargeAmount;
     }
     
     public VirtualICCard(int charge) {

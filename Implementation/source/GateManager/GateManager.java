@@ -7,29 +7,56 @@ package GateManager;
 
 public class GateManager {
     
-    Station station;
-    boolean isEntrance; // true:entrance false:exit
-    Gate gate;
+    static Station station;
+    static boolean isEntrance; // true:entrance false:exit
+    static Gate gate;
     
     static public void openGateCheck(Pass pass) {
-        
+        if ( isEntrance ) {
+            if ( pass.getEntrainingPoint() == null ) {
+                ICPanel.updateEntrainingPoint(station);
+                gate.openGate();
+            } else if ( pass.getEntrainingPoint() == station ) {
+                if ( pass.getPassType() == 0 ) {
+                    TicketReceiver.cutTicket();
+                    TicketReceiver.putoutTicket();
+                }
+                gate.openGate();
+            } else {
+                gate.closeGate();
+                System.out.println("変なところから入らないで");
+            }
+        } else {
+            int fare = station.getFare(pass.getEntrainingPoint());
+            if ( fare <= pass.getCharge() ) {
+                gate.openGate();
+                switch ( pass.getPassType() ) {
+                    case 0:
+                        // do nothing
+                        break;
+                    case 1:
+                        ICPanel.deductCharge(fare);
+                        break;
+                }
+            } else {
+                System.out.println("たりない");
+            }
+        }
     }
     
-    public GateManager(Station station, boolean isEntrance) {
-        station = station;
-        isEntrance = isEntrance;
+    // set Gate State
+    static public void setEnvironment(Station s, boolean ent) {
+        station = s;
+        isEntrance = ent;
         gate = new Gate();
     }
 }
 
-class TicketVent {
-    public void putoutTicket() {
-        System.out.println("putout ticket");
-    }
-}
-
 class Gate {
-    static public void closeGate() {
+    public void openGate() {
+        System.out.println("open gate");
+    }
+    public void closeGate() {
         System.out.println("close gate");
     }
 }

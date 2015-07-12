@@ -13,11 +13,13 @@ public class ICCard extends Pass{
     private Station commuterPassStart;
     private Station commuterPassEnd;
     
+    int passType = 1;
+    
     public int getCharge() {
         return chargeAmount;
     }
-    static public void deductCharge(int deductAmount) {
-        System.out.println("");
+    public void deductCharge(int fare) {
+        chargeAmount -= fare;
     }
     public void updateCharge(int charge) {
         chargeAmount = charge;
@@ -30,6 +32,11 @@ public class ICCard extends Pass{
     }
     public boolean isInStation() {
         return entrainingPoint != null;
+    }
+    public int getPassType() {
+        return passType;
+    }
+    public void enterStation() {
     }
     
     public ICCard(int charge) {

@@ -8,6 +8,10 @@ package GateManager;
 public class Station {
     private String name;
     
+    public int getFare(Station station) {
+        return 120;
+    }
+    
     public Station(String n) {
         name = n;
     }
