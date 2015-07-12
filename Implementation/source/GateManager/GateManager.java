@@ -11,7 +11,7 @@ public class GateManager {
     static boolean isEntrance; // true:entrance false:exit
     static Gate gate=new Gate();
     static public void openGateCheck(Pass pass) {
-    	/*if ( pass.getEntrainingPoint() == null ) {
+    	if ( pass.getEntrainingPoint() == null ) {
                 if(pass.getCharge()>=200){
                 	ICPanel.updateEntrainingPoint(station);
                 	gate.openGate();
@@ -21,9 +21,10 @@ public class GateManager {
                 	System.out.println("Wrong Charge Error");
                 }
                 
-        }else{*/
+        }else{
         	if(pass.getCharge()>=200){
         		pass.deductCharge(200);
+        		pass.updateEntrainingPoint(null);
         		gate.openGate();
         	}else if(pass.getCharge()>=0){
         		gate.closeGate();
@@ -31,7 +32,7 @@ public class GateManager {
         		System.out.println("Wrong Charge Error");
         	}
         	
-     //   }
+        }
     }
     
     // set Gate State
