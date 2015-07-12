@@ -28,19 +28,6 @@ class TicketVent {
     }
 }
 
-
-interface PassReceiver {
-    static public void insert(Pass pass) {
-        GateManager.openGateCheck(pass);
-    }
-}
-
-class TicketReceiver implements PassReceiver {
-}
-
-class ICPanel implements PassReceiver {
-}
-
 class Gate {
     static public void closeGate() {
         System.out.println("close gate");
