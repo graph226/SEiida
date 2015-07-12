@@ -48,6 +48,10 @@ public class ICCard extends Pass{
          entrainingPoint = null;
     
     }
-    
+    public String toString(){
+    	if(entrainingPoint==null)return chargeAmount+"\tnull";
+    	else return chargeAmount+"\t"+entrainingPoint;
+    	
+    }
 }
 

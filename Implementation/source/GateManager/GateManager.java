@@ -10,26 +10,32 @@ public class GateManager {
     static Station station;
     static boolean isEntrance; // true:entrance false:exit
     static Gate gate=new Gate();
+    static Monitor m=new Monitor();
     static public void openGateCheck(Pass pass) {
     	if ( pass.getEntrainingPoint() == null ) {
                 if(pass.getCharge()>=200){
                 	ICPanel.updateEntrainingPoint(station);
+                	m.showMessage("Entry "+pass);
                 	gate.openGate();
                 }else if(pass.getCharge()>=0){
+                	m.showMessage("Shortage of Money "+pass);
                 	gate.closeGate();
                 }else{
-                	System.out.println("Wrong Charge Error");
+                	m.showMessage("Wrong Charge Error "+ pass);
                 }
                 
         }else{
         	if(pass.getCharge()>=200){
         		pass.deductCharge(200);
         		pass.updateEntrainingPoint(null);
+        		m.showMessage("Exit "+pass);
         		gate.openGate();
         	}else if(pass.getCharge()>=0){
+        		m.showMessage("Shortage of Money "+pass);
+        		
         		gate.closeGate();
         	}else{
-        		System.out.println("Wrong Charge Error");
+        		System.out.println("Wrong Charge Error "+pass);
         	}
         	
         }
@@ -71,10 +77,10 @@ public class GateManager {
 
 class Gate {
     public void openGate() {
-        System.out.println("open gate");
+        System.out.println("GATE:\t\topen gate");
     }
     public void closeGate() {
-        System.out.println("close gate");
+        System.out.println("GATE:\t\tclose gate");
     }
 }
 
