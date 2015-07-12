@@ -4,44 +4,34 @@
  **/
 
 package GateManager;
-
+import java.util.*;
 public class GateManager {
     
     static Station station;
     static boolean isEntrance; // true:entrance false:exit
-    static Gate gate;
-    
+    static Gate gate=new Gate();
     static public void openGateCheck(Pass pass) {
-        if ( isEntrance ) {
-            if ( pass.getEntrainingPoint() == null ) {
-                ICPanel.updateEntrainingPoint(station);
-                gate.openGate();
-            } else if ( pass.getEntrainingPoint() == station ) {
-                if ( pass.getPassType() == 0 ) {
-                    TicketReceiver.cutTicket();
-                    TicketReceiver.putoutTicket();
+    	/*if ( pass.getEntrainingPoint() == null ) {
+                if(pass.getCharge()>=200){
+                	ICPanel.updateEntrainingPoint(station);
+                	gate.openGate();
+                }else if(pass.getCharge()>=0){
+                	gate.closeGate();
+                }else{
+                	System.out.println("Wrong Charge Error");
                 }
-                gate.openGate();
-            } else {
-                gate.closeGate();
-                System.out.println("$BJQ$J$H$3$m$+$iF~$i$J$$$G(B");
-            }
-        } else {
-            int fare = station.getFare(pass.getEntrainingPoint());
-            if ( fare <= pass.getCharge() ) {
-                gate.openGate();
-                switch ( pass.getPassType() ) {
-                    case 0:
-                        // do nothing
-                        break;
-                    case 1:
-                        ICPanel.deductCharge(fare);
-                        break;
-                }
-            } else {
-                System.out.println("$B$?$j$J$$(B");
-            }
-        }
+                
+        }else{*/
+        	if(pass.getCharge()>=200){
+        		pass.deductCharge(200);
+        		gate.openGate();
+        	}else if(pass.getCharge()>=0){
+        		gate.closeGate();
+        	}else{
+        		System.out.println("Wrong Charge Error");
+        	}
+        	
+     //   }
     }
     
     // set Gate State
@@ -49,6 +39,32 @@ public class GateManager {
         station = s;
         isEntrance = ent;
         gate = new Gate();
+    }
+
+    static public void main(String[] args){
+    	ICPanel panel=new ICPanel();
+    	//駅の場合
+    	Station s_list[]={
+    			new Station("Takadanobaba"),
+    			new Station("Iidabashi"),
+    			new Station("Shinjuku")
+    	};
+    	station=s_list[0];
+    	Queue<ICCard> list=new LinkedList<ICCard>();
+    	list.add(new ICCard(-200,s_list[2]));
+    	list.add(new ICCard(0,s_list[2]));
+    	list.add(new ICCard(200,s_list[2]));
+    	list.add(new ICCard(1000,s_list[2]));
+    	list.add(new ICCard(-200));
+    	list.add(new ICCard(0));
+    	list.add(new ICCard(200));
+    	list.add(new ICCard(1000));
+    	
+    	while(!list.isEmpty()){
+    		ICCard itr=list.poll();
+    		ICPanel.insert(itr);
+    	}
+    	
     }
 }
 
@@ -62,15 +78,3 @@ class Gate {
 }
 
 //// 
-
-class ICCardModifyer {
-}
-
-class ConsoleScreen {
-}
-
-class CashVent {
-}
-
-class CashReceiver {
-}

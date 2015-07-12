@@ -5,14 +5,14 @@
 
 package GateManager;
 
-public class ICPanel implements PassReceiver {
-    static Pass pass;
-    static public void insert(Pass p) {
+public class ICPanel{
+	static Pass pass;
+    static public void insert(ICCard p) {
         pass = p;
         GateManager.openGateCheck(pass);
     }
     static public void updateEntrainingPoint(Station station) {
-        System.out.println("update entraining point");
+       // System.out.println("update entraining point");
         pass.updateEntrainingPoint(station);
     }
     static public void deductCharge(int fare) {

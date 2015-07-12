@@ -39,12 +39,14 @@ public class ICCard extends Pass{
     public void enterStation() {
     }
     
-    public ICCard(int charge) {
+    public ICCard(int charge,Station station) {
         chargeAmount = charge;
-        entrainingPoint = null;
+        entrainingPoint = station;
     }
-    public ICCard() {
-        
+    public ICCard(int charge) {
+    	 chargeAmount = charge;
+         entrainingPoint = null;
+    
     }
     
 }
