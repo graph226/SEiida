@@ -5,8 +5,6 @@
 package GateManager;
 
 interface PassReceiver {
-    static public void insert(Pass pass) {
-        GateManager.openGateCheck(pass);
-    }
+    abstract public void insert(Pass pass);
 }
 

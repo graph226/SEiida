@@ -15,27 +15,26 @@ public class GateManager {
     	if ( pass.getEntrainingPoint() == null ) {
                 if(pass.getCharge()>=200){
                 	ICPanel.updateEntrainingPoint(station);
-                	m.showMessage("Entry "+pass);
+                	m.passMessage(pass);
                 	gate.openGate();
                 }else if(pass.getCharge()>=0){
-                	m.showMessage("Shortage of Money "+pass);
+                	m.shortageMessage(pass);
                 	gate.closeGate();
                 }else{
-                	m.showMessage("Wrong Charge Error "+ pass);
+                	m.wrongDataMessage(pass);
                 }
                 
         }else{
         	if(pass.getCharge()>=200){
         		pass.deductCharge(200);
         		pass.updateEntrainingPoint(null);
-        		m.showMessage("Exit "+pass);
+        		m.passMessage(pass);
         		gate.openGate();
         	}else if(pass.getCharge()>=0){
-        		m.showMessage("Shortage of Money "+pass);
-        		
+        		m.shortageMessage(pass);
         		gate.closeGate();
         	}else{
-        		System.out.println("Wrong Charge Error "+pass);
+        		m.wrongDataMessage(pass);
         	}
         	
         }
