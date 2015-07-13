@@ -11,34 +11,41 @@ public class GateManager {
     static boolean isEntrance; // true:entrance false:exit
     static Gate gate;
     
-    static public void openGateCheck(Pass pass) {
+    static public void openGateCheck(Ticket ticket) {
         if ( isEntrance ) {
-            if ( pass.getEntrainingPoint() == null ) {
-                ICPanel.updateEntrainingPoint(station);
-                gate.openGate();
-            } else if ( pass.getEntrainingPoint() == station ) {
-                if ( pass.getPassType() == 0 ) {
-                    TicketReceiver.cutTicket();
-                    TicketReceiver.putoutTicket();
-                }
+            if ( ticket.getEntrainingPoint() == station ) {
+                TicketReceiver.cutTicket();
+                TicketReceiver.putoutTicket();
                 gate.openGate();
             } else {
+                System.out.println("illegal entraining point.");
                 gate.closeGate();
-                System.out.println("変なところから入らないで");
             }
         } else {
-            int fare = station.getFare(pass.getEntrainingPoint());
-            if ( fare <= pass.getCharge() ) {
+            int fare = station.getFare(ticket.getEntrainingPoint());
+            if ( fare <= ticket.getCharge() ) {
                 gate.openGate();
-                switch ( pass.getPassType() ) {
-                    case 0:
-                        // do nothing
-                        break;
-                    case 1:
-                        ICPanel.deductCharge(fare);
-                        break;
-                }
             } else {
+                System.out.println("たりない");
+            }
+        }
+    }
+    static public void openGateCheck(ICCard iccard) {
+        if ( isEntrance ) {
+            if ( iccard.getEntrainingPoint() == null ) {
+                ICPanel.updateEntrainingPoint(station);
+                gate.openGate();
+            } else {
+                System.out.println("ICCard is in the station");
+                gate.closeGate();
+            }
+        } else {
+            int fare = station.getFare(iccard.getEntrainingPoint());
+            if ( fare <= iccard.getCharge() ) {
+                gate.openGate();
+                ICPanel.deductCharge(fare);
+            } else {
+                gate.closeGate();
                 System.out.println("たりない");
             }
         }

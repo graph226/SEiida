@@ -5,7 +5,7 @@
 
 package GateManager;
 
-public class ICCard extends Pass{
+public class ICCard {
     private int chargeAmount;
     private Station entrainingPoint;
     

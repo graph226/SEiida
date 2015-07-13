@@ -127,7 +127,8 @@ class VirtualEnvironment {
         int input;
         int index;
         int passType;
-        Pass pass = null;
+        Ticket ticket = null;
+        ICCard iccard = null;
         VirtualStation station;
         boolean isEntrance;
         
@@ -156,7 +157,7 @@ class VirtualEnvironment {
                 System.out.println("choose ticket");
                 displayTickets();
                 index = getUserInputNum(0,tickets.size());
-                pass = (Pass)tickets.get(index);
+                ticket = tickets.get(index);
                 break;
             case 1:
                 if ( iccards.isEmpty() ) {
@@ -168,7 +169,7 @@ class VirtualEnvironment {
                 System.out.println("choose ICCard");
                 displayICCards();
                 index = getUserInputNum(0,iccards.size());
-                pass = (Pass)iccards.get(index);
+                iccard = iccards.get(index);
                 break;
             default:
                 System.err.println("mysterious error caused");
@@ -180,23 +181,17 @@ class VirtualEnvironment {
         index = getUserInputNum(0,stations.size());
         station = stations.get(index);
         
-        throughGate( isEntrance, pass, station);
-        
-        changeState(State.MENU);
-    }
-    ////
-    
-    //// the most important thing that i should implement.
-    private static void throughGate( boolean isEntrance, Pass pass, Station station) {
         GateManager.setEnvironment( station, isEntrance );
-        switch( pass.getPassType() ) {
+        switch( passType ) {
             case 0:
-                TicketReceiver.insert(pass);
+                TicketReceiver.insert(ticket);
                 break;
             case 1:
-                ICPanel.insert(pass);
+                ICPanel.insert(iccard);
                 break;
         }
+        
+        changeState(State.MENU);
     }
     ////
     

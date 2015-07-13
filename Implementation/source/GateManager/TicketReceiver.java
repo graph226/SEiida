@@ -5,14 +5,14 @@
 
 package GateManager;
 
-public class TicketReceiver implements PassReceiver {
-    static Pass pass;
-    static public void insert(Pass pass) {
-        GateManager.openGateCheck(pass);
-        pass = pass;
+public class TicketReceiver {
+    static Ticket ticket;
+    static public void insert(Ticket in) {
+        ticket = in;
+        GateManager.openGateCheck(ticket);
     }
     static public void cutTicket() {
-        pass.enterStation();
+        ticket.enterStation();
     }
     static public void putoutTicket() {
         System.out.println("putout ticket");

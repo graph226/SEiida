@@ -5,7 +5,7 @@
 
 package GateManager;
 
-public class Ticket extends Pass{
+public class Ticket {
     private int charge;
     private Station entrainingPoint;
     private boolean isInStationStat;
@@ -27,14 +27,6 @@ public class Ticket extends Pass{
     public int getPassType() {
         return passType;
     }
-    
-    
-    // ぶっちゃけた話もうただのエラー回避
-    public void updateEntrainingPoint(Station station) {
-    }
-    public void deductCharge(int fare) {
-    }
-    
     
     
     public Ticket(int c, Station ep ,boolean stat) {
