@@ -23,10 +23,14 @@ public class GateManager {
             }
         } else {
             int fare = station.getFare(ticket.getEntrainingPoint());
-            if ( fare <= ticket.getCharge() ) {
-                gate.openGate();
+            if ( !ticket.isInStation() ) {
+                System.out.println("no enter log");
+                gate.closeGate();
+            } else if ( fare > ticket.getCharge() ) {
+                System.out.println("lack of fare");
+                gate.closeGate();
             } else {
-                System.out.println("たりない");
+                gate.openGate();
             }
         }
     }
@@ -46,7 +50,7 @@ public class GateManager {
                 ICPanel.deductCharge(fare);
             } else {
                 gate.closeGate();
-                System.out.println("たりない");
+                System.out.println("lack of charge");
             }
         }
     }
@@ -56,6 +60,7 @@ public class GateManager {
         station = s;
         isEntrance = ent;
         gate = new Gate();
+        
     }
 }
 
